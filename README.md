@@ -3,6 +3,9 @@
 Redis resource provider for Flynn. Layout follows
 [`flynn-plugin-template`](https://github.com/randy-girard/flynn-plugin-template).
 
+Redis comes from the Ubuntu 24.04 package set and runs as a **single process**.
+Treat data as ephemeral (cache, development, test). There are no HA guarantees.
+
 ## Install
 
 On a cluster host:
@@ -14,12 +17,36 @@ flynn-host plugin install https://github.com/randy-girard/flynn-plugin-redis.git
 ```
 
 The user `flynn` CLI does not install plugins. After install, that cluster's
-CLI catalog lists `redis` (`redis-cli`, `dump`, `restore`). Provision a database
-for an app with:
+CLI catalog lists `redis` (`redis-cli`, `dump`, `restore`).
+
+## Usage
+
+After the plugin is installed, provision a database for an app:
 
 ```text
 flynn resource add redis
 ```
+
+That starts a Redis server as a Flynn app and configures the application to
+connect to it. The app release gets `REDIS_HOST`, `REDIS_PORT`, `REDIS_PASSWORD`,
+and `REDIS_URL` (some libraries use the URL).
+
+Open a console on the cluster (no local Redis client or firewall change):
+
+```text
+flynn redis redis-cli
+```
+
+The console uses `REDIS_HOST` (`leader.<redis-app>.discoverd`), the same host as
+`REDIS_URL`.
+
+To reach Redis from outside the cluster, add a TCP route to the leader:
+
+```text
+flynn -a $(flynn env get FLYNN_REDIS) route add tcp --service $(flynn env get FLYNN_REDIS) --leader
+```
+
+Firewall that port. Use it only over the local network, a VPN, or an SSH tunnel.
 
 ## Image artifacts
 
@@ -27,7 +54,7 @@ flynn resource add redis
 
 - `dist/image.json` — Flynn Artifact (`type: flynn`)
 - `dist/<manifest-id>.json` — ImageManifest at `artifact.uri`
-- `dist/layers/<layer-id>.squashfs` — zstd squashfs rootfs
+- `dist/layers/<layer-id>.squashfs` — Flynn ubuntu-noble plus the Redis delta
 - `dist/flynn-plugin.json` — manifest with `artifacts.image` set to the GitHub
   Release URL for `image.json`
 
@@ -66,8 +93,3 @@ Pin Flynn APIs with the `replace` in `go.mod` (`github.com/randy-girard/flynn`).
 CI runs `gofmt` and `go test` on push/PR. Image builds are **manual**: run
 **Build and Release**, pass a version like `v20260914.0` (same scheme as Flynn).
 The default is a draft/prerelease.
-
-## Safety
-
-No HA guarantees. Treat data as ephemeral (cache / dev / test). See
-[docs/redis.md](docs/redis.md).
