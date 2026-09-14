@@ -32,7 +32,7 @@
     "base": {
       "repo": "randy-girard/flynn",
       "version": "latest",
-      "image": "blobstore"
+      "image": "ubuntu-noble"
     },
     "entrypoint": ["/bin/start-flynn-redis"],
     "packages": "img/packages.sh",

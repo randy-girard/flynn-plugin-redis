@@ -8,16 +8,32 @@ Treat data as ephemeral (cache, development, test). There are no HA guarantees.
 
 ## Install
 
-On a cluster host:
+On a cluster host. A local checkout is optional: the `redis` alias pulls
+`https://github.com/randy-girard/flynn-plugin-redis` when no sibling dir exists.
 
 ```text
-flynn-host plugin install redis
-flynn-host plugin install /path/to/flynn-plugin-redis
+flynn-host plugin install redis --ref vX
 flynn-host plugin install https://github.com/randy-girard/flynn-plugin-redis.git --ref vX
+flynn-host plugin install /path/to/flynn-plugin-redis
 ```
 
-The user `flynn` CLI does not install plugins. After install, that cluster's
-CLI catalog lists `redis` (`redis-cli`, `dump`, `restore`).
+`--ref` is a published GitHub Release tag from **Build and Release**. Override
+the org with `--github-org`, `FLYNN_PLUGIN_GITHUB_ORG`, or `/etc/flynn/plugins.json`:
+
+```json
+{
+  "github_org": "randy-girard",
+  "redis": {
+    "url": "https://github.com/randy-girard/flynn-plugin-redis.git",
+    "ref": "vX"
+  }
+}
+```
+
+Private or draft releases need `flynn-host plugin credentials set github` (or
+`FLYNN_PLUGIN_GITHUB_TOKEN`). The user `flynn` CLI does not install plugins.
+After install, that cluster's CLI catalog lists `redis` (`redis-cli`, `dump`,
+`restore`).
 
 ## Usage
 
@@ -65,7 +81,9 @@ https://github.com/<owner>/flynn-plugin-redis/releases/download/<tag>/image.json
 https://github.com/<owner>/flynn-plugin-redis/releases/download/<tag>/{id}.squashfs
 ```
 
-The image stacks Flynn's **ubuntu-noble** layer (from a Flynn GitHub Release) with
+The image stacks Flynn's **ubuntu-noble** layer (from a Flynn GitHub Release;
+`images.json.gz` may list it only as postgres/gitreceive layer 0, not as a
+named `ubuntu-noble` image) with
 `redis-server` + `flynn-redis` / `flynn-redis-api`. Entrypoint is
 `/bin/start-flynn-redis` (the API process adds `api`). Child Redis apps use the
 same image via `REDIS_IMAGE_ID=self`.
