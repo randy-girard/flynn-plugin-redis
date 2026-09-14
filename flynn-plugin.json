@@ -1,0 +1,52 @@
+{
+  "name": "redis",
+  "kind": "resource-provider",
+  "provider": {
+    "name": "redis",
+    "url": "http://redis-api.discoverd/clusters"
+  },
+  "app": {
+    "name": "redis",
+    "meta": {
+      "flynn-system-app": "true",
+      "flynn-plugin": "true",
+      "flynn-datastore": "true"
+    },
+    "processes": {
+      "web": {
+        "args": ["/bin/start-flynn-redis", "api"],
+        "ports": [{"port": 80, "proto": "tcp"}]
+      }
+    }
+  },
+  "inject_env": ["CONTROLLER_KEY", "SINGLETON"],
+  "image_env": {
+    "REDIS_IMAGE_ID": "self"
+  },
+  "cli": {
+    "command": "redis",
+    "usage": "manage redis databases",
+    "subcommands": ["redis-cli", "dump", "restore"]
+  },
+  "build": {
+    "base": {
+      "repo": "randy-girard/flynn",
+      "version": "latest",
+      "image": "blobstore"
+    },
+    "entrypoint": ["/bin/start-flynn-redis"],
+    "packages": "img/packages.sh",
+    "go": {
+      "./cmd/flynn-redis": "/bin/flynn-redis",
+      "./cmd/flynn-redis-api": "/bin/flynn-redis-api"
+    },
+    "copy": {
+      "start.sh": "/bin/start-flynn-redis",
+      "dump.sh": "/bin/dump-flynn-redis",
+      "restore.sh": "/bin/restore-flynn-redis"
+    }
+  },
+  "artifacts": {
+    "image": ""
+  }
+}
