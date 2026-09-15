@@ -96,6 +96,9 @@ same image via `REDIS_IMAGE_ID=self`.
 ./script/plugin-build
 ```
 
+Unit tests write HTML coverage under `coverage/` (gitignored): open `coverage/index.html`. Set `PLUGIN_SKIP_COVERAGE=1` to skip the report.
+
+
 On Linux those run natively. On macOS they use Docker Desktop (linux/amd64,
 privileged), same idea as Flynn `script/run-unit-tests`, so process tests see
 `redis-server` and `plugin-build` can overlay Flynn's ubuntu-noble + mksquashfs.

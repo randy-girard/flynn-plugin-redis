@@ -8,7 +8,7 @@ Do not land behavior without tests in the **same change**.
 
 - Process/API/client changes: `process_test.go`, `process_persist_test.go`, `cmd/flynn-redis/*_test.go`, `cmd/flynn-redis-api/*_test.go`.
 - `cmd/plugin-build` (manifest, Flynn base selection, layer verify): `cmd/plugin-build/*_test.go`.
-- Run `./script/run-unit-tests` (native on Linux; Docker on macOS, image includes `redis-server`). `gofmt -s` must be clean.
+- Run `./script/run-unit-tests` (native on Linux; Docker on macOS, image includes `redis-server`). `gofmt -s` must be clean. Unit tests write HTML coverage under `coverage/` (gitignored).
 - Process tests that exec `redis-server` must skip cleanly when the binary is missing, and must run in the Docker wrapper.
 
 Skip tests only when the change cannot regress (typo in comments, LICENSE). Say so in the commit body.
