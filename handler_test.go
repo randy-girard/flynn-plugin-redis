@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"path/filepath"
+	"strings"
 	"testing"
 
 	discoverd "github.com/flynn/flynn/discoverd/client"
@@ -42,6 +44,14 @@ func (h *hbStub) SetMeta(map[string]string) error { return nil }
 func (h *hbStub) Close() error                    { h.closed = true; return nil }
 func (h *hbStub) Addr() string                    { return "127.0.0.1:1" }
 func (h *hbStub) SetClient(*discoverd.Client)     {}
+
+func TestProcessRestoreMissingDataDir(t *testing.T) {
+	p := NewProcess()
+	p.DataDir = filepath.Join(t.TempDir(), "missing")
+	if err := p.Restore(strings.NewReader("RDB")); err == nil {
+		t.Fatal("restore into a missing DataDir must fail")
+	}
+}
 
 func TestHandlerStopClosesHeartbeater(t *testing.T) {
 	h := NewHandler()
