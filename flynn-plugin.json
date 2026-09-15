@@ -26,7 +26,35 @@
   "cli": {
     "command": "redis",
     "usage": "manage redis databases",
-    "subcommands": ["redis-cli", "dump", "restore"]
+    "subcommands": ["redis-cli", "dump", "restore"],
+    "doc": "usage: flynn redis redis-cli [--] [<argument>...]\n       flynn redis dump [-q] [-f <file>]\n       flynn redis restore [-q] [-f <file>]\n\nOptions:\n\t-f, --file=<file>  name of dump file\n\t-q, --quiet        don't print progress\n\nCommands:\n\tredis-cli  Open a console to a Flynn redis instance. Any valid arguments to redis-cli may be provided.\n\tdump     Dump a redis instance. If file is not specified, will dump to stdout.\n\trestore  Restore a dump. If file is not specified, will restore from stdin.\n\nExamples:\n\n    $ flynn redis redis-cli\n\n    $ flynn redis dump -f db.dump\n\n    $ flynn redis restore -f db.dump\n",
+    "resource_env": "FLYNN_REDIS",
+    "resource_missing": "No redis server found. Provision one with `flynn resource add redis`",
+    "actions": [
+      {
+        "name": "redis-cli",
+        "args": ["redis-cli", "-h", "${app.REDIS_HOST|leader.${resource}.discoverd}", "-a", "${app.REDIS_PASSWORD}"],
+        "append": "<argument>",
+        "env": {
+          "PAGER": "less",
+          "LESS": "--ignore-case --LONG-PROMPT --SILENT --tabs=4 --quit-if-one-screen --no-init --quit-at-eof"
+        }
+      },
+      {
+        "name": "dump",
+        "args": ["/bin/dump-flynn-redis", "-h", "${app.REDIS_HOST|leader.${resource}.discoverd}", "-a", "${app.REDIS_PASSWORD}"],
+        "stdout_file": "--file",
+        "progress": true,
+        "quiet": "--quiet"
+      },
+      {
+        "name": "restore",
+        "args": ["/bin/restore-flynn-redis", "-h", "${app.REDIS_HOST|leader.${resource}.discoverd}", "-a", "${app.REDIS_PASSWORD}"],
+        "stdin_file": "--file",
+        "progress": true,
+        "quiet": "--quiet"
+      }
+    ]
   },
   "build": {
     "base": {

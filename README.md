@@ -33,7 +33,8 @@ the org with `--github-org`, `FLYNN_PLUGIN_GITHUB_ORG`, or `/etc/flynn/plugins.j
 Private or draft releases need `flynn-host plugin credentials set github` (or
 `FLYNN_PLUGIN_GITHUB_TOKEN`). The user `flynn` CLI does not install plugins.
 After install, that cluster's CLI catalog lists `redis` (`redis-cli`, `dump`,
-`restore`).
+`restore`) from the plugin manifest. The `flynn` binary does not compile those
+commands in; it fetches usage from the cluster and runs them as jobs.
 
 ## Usage
 
