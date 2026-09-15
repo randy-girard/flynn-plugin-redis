@@ -267,8 +267,8 @@ func (h *Handler) servePostCluster(w http.ResponseWriter, req *http.Request, _ h
 func (h *Handler) serveDeleteCluster(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	// Extract release ID.
 	h.Logger.Info("parsing id", "id", req.FormValue("id"))
-	releaseID := strings.TrimPrefix(req.FormValue("id"), "/clusters/")
-	if releaseID == "" {
+	releaseID, ok := parseClusterResourceID(req.FormValue("id"))
+	if !ok {
 		h.Logger.Error("error parsing id", "id", req.FormValue("id"))
 		httphelper.ValidationError(w, "id", "is invalid")
 		return
@@ -305,4 +305,12 @@ func (h *Handler) serveDeleteCluster(w http.ResponseWriter, req *http.Request, _
 
 func (h *Handler) serveGetPing(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	w.WriteHeader(200)
+}
+
+func parseClusterResourceID(id string) (string, bool) {
+	id = strings.TrimSpace(strings.TrimPrefix(id, "/clusters/"))
+	if id == "" || strings.ContainsAny(id, "/\\:\n\r\t") || strings.Contains(id, "..") {
+		return "", false
+	}
+	return id, true
 }
