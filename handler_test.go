@@ -6,6 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	discoverd "github.com/flynn/flynn/discoverd/client"
 	"github.com/flynn/flynn/pkg/status"
 	"github.com/inconshreveable/log15"
 )
@@ -30,5 +31,29 @@ func TestHandlerStatusWhenStopped(t *testing.T) {
 	}
 	if h.healthStatus() != status.Unhealthy {
 		t.Fatal("stopped redis must be unhealthy")
+	}
+}
+
+type hbStub struct {
+	closed bool
+}
+
+func (h *hbStub) SetMeta(map[string]string) error { return nil }
+func (h *hbStub) Close() error                    { h.closed = true; return nil }
+func (h *hbStub) Addr() string                    { return "127.0.0.1:1" }
+func (h *hbStub) SetClient(*discoverd.Client)     {}
+
+func TestHandlerStopClosesHeartbeater(t *testing.T) {
+	h := NewHandler()
+	h.Process = &Process{}
+	h.Logger = log15.New()
+	hb := &hbStub{}
+	h.Heartbeater = hb
+
+	req := httptest.NewRequest(http.MethodPost, "/stop", nil)
+	rec := httptest.NewRecorder()
+	h.ServeHTTP(rec, req)
+	if rec.Code != 200 || !hb.closed {
+		t.Fatalf("stop status=%d closed=%v", rec.Code, hb.closed)
 	}
 }
