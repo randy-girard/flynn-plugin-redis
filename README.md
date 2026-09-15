@@ -1,5 +1,7 @@
 # Flynn Redis plugin
 
+[![coverage](https://raw.githubusercontent.com/randy-girard/flynn-plugin-redis/coverage-badge/badge.svg)](https://github.com/randy-girard/flynn-plugin-redis/actions/workflows/ci.yml)
+
 Redis resource provider for Flynn. Layout follows
 [`flynn-plugin-template`](https://github.com/randy-girard/flynn-plugin-template).
 
