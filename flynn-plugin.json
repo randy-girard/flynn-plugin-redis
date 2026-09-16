@@ -56,6 +56,9 @@
       }
     ]
   },
+  "hooks": {
+    "uninstall": "script/uninstall.sh"
+  },
   "build": {
     "base": {
       "repo": "randy-girard/flynn",

@@ -17,6 +17,8 @@ On a cluster host. A local checkout is optional: the `redis` alias pulls
 flynn-host plugin install redis --ref vX
 flynn-host plugin install https://github.com/randy-girard/flynn-plugin-redis.git --ref vX
 flynn-host plugin install /path/to/flynn-plugin-redis
+flynn-host plugin uninstall redis
+flynn-host plugin uninstall redis --force
 ```
 
 `--ref` is a published GitHub Release tag from **Build and Release**. Override
@@ -37,6 +39,8 @@ Private or draft releases need `flynn-host plugin credentials set github` (or
 After install, that cluster's CLI catalog lists `redis` (`redis-cli`, `dump`,
 `restore`) from the plugin manifest. The `flynn` binary does not compile those
 commands in; it fetches usage from the cluster and runs them as jobs.
+Uninstall with `flynn-host plugin uninstall redis`. Resource-provider uninstall
+refuses while other apps still use provisioned resources unless `--force`.
 
 ## Usage
 

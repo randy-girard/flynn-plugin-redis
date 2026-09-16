@@ -186,3 +186,74 @@ func TestWriteCompactJSONDoesNotEscapeHTML(t *testing.T) {
 		t.Fatalf("unexpected unicode escape: %s", got)
 	}
 }
+
+func TestCopyHookAssets(t *testing.T) {
+	root := t.TempDir()
+	out := filepath.Join(root, "dist")
+	if err := os.MkdirAll(filepath.Join(root, "script"), 0755); err != nil {
+		t.Fatal(err)
+	}
+	body := []byte("#!/bin/sh\nexit 0\n")
+	if err := os.WriteFile(filepath.Join(root, "script", "uninstall.sh"), body, 0755); err != nil {
+		t.Fatal(err)
+	}
+	if err := copyHookAssets(root, out, pluginHooks{Uninstall: "script/uninstall.sh"}); err != nil {
+		t.Fatal(err)
+	}
+	dest := filepath.Join(out, "script-uninstall.sh")
+	got, err := os.ReadFile(dest)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(got) != string(body) {
+		t.Fatalf("copied=%q", got)
+	}
+	st, err := os.Stat(dest)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if st.Mode()&0111 == 0 {
+		t.Fatalf("hook asset must be executable, mode=%s", st.Mode())
+	}
+	if hookAssetName("script/uninstall.sh") != "script-uninstall.sh" {
+		t.Fatal(hookAssetName("script/uninstall.sh"))
+	}
+	if err := copyHookAssets(root, out, pluginHooks{Uninstall: "../secret"}); err == nil {
+		t.Fatal("path escape")
+	}
+}
+
+func TestRepoFlynnPluginManifestUninstallHook(t *testing.T) {
+	root, err := filepath.Abs("../..")
+	if err != nil {
+		t.Fatal(err)
+	}
+	raw, err := os.ReadFile(filepath.Join(root, "flynn-plugin.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var m struct {
+		Hooks struct {
+			Uninstall string `json:"uninstall"`
+		} `json:"hooks"`
+	}
+	if err := json.Unmarshal(raw, &m); err != nil {
+		t.Fatal(err)
+	}
+	if m.Hooks.Uninstall != "script/uninstall.sh" {
+		t.Fatalf("hooks.uninstall=%q", m.Hooks.Uninstall)
+	}
+	if _, err := os.Stat(filepath.Join(root, "script", "uninstall.sh")); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestReleaseWorkflowUploadsHookScripts(t *testing.T) {
+	raw, err := os.ReadFile(filepath.Join("..", "..", ".github", "workflows", "release.yml"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(raw), "*.sh") {
+		t.Fatal("Build and Release must upload dist/*.sh hook assets")
+	}
+}
