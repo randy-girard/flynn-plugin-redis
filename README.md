@@ -77,15 +77,17 @@ Firewall that port. Use it only over the local network, a VPN, or an SSH tunnel.
 
 - `dist/image.json` — Flynn Artifact (`type: flynn`)
 - `dist/<manifest-id>.json` — ImageManifest at `artifact.uri`
-- `dist/layers/<layer-id>.squashfs` — Flynn ubuntu-noble plus the Redis delta
+- `dist/layers/<layer-id>.squashfs` — Flynn ubuntu-noble (local overlay) plus the Redis delta
 - `dist/flynn-plugin.json` — manifest with `artifacts.image` set to the GitHub
   Release URL for `image.json`
 
-Release asset URLs look like:
+Release assets are `image.json`, hook scripts, and the **Redis delta** squashfs.
+Flynn ubuntu-noble is not re-uploaded; hosts fetch that layer from the Flynn
+GitHub Release named in `flynn.plugin.base` (same layer id).
 
 ```text
 https://github.com/<owner>/flynn-plugin-redis/releases/download/<tag>/image.json
-https://github.com/<owner>/flynn-plugin-redis/releases/download/<tag>/{id}.squashfs
+https://github.com/<owner>/flynn-plugin-redis/releases/download/<tag>/{delta-id}.squashfs
 ```
 
 The image stacks Flynn's **ubuntu-noble** layer (from a Flynn GitHub Release;
