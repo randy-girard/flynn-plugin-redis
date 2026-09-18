@@ -8,9 +8,9 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/inconshreveable/log15"
 	discoverd "github.com/randy-girard/flynn/discoverd/client"
 	"github.com/randy-girard/flynn/pkg/status"
-	"github.com/inconshreveable/log15"
 )
 
 func TestHandlerStatusWhenStopped(t *testing.T) {

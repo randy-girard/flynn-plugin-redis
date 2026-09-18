@@ -3,11 +3,11 @@ package redis
 import (
 	"net/http"
 
+	"github.com/inconshreveable/log15"
+	"github.com/julienschmidt/httprouter"
 	"github.com/randy-girard/flynn/discoverd/client"
 	"github.com/randy-girard/flynn/pkg/httphelper"
 	"github.com/randy-girard/flynn/pkg/status"
-	"github.com/inconshreveable/log15"
-	"github.com/julienschmidt/httprouter"
 )
 
 // Handler represents an HTTP handler for the redis process.

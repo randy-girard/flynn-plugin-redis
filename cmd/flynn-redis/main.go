@@ -9,13 +9,13 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/inconshreveable/log15"
+	"github.com/randy-girard/flynn-plugin-redis"
 	"github.com/randy-girard/flynn/discoverd/client"
 	"github.com/randy-girard/flynn/pkg/httphelper"
 	"github.com/randy-girard/flynn/pkg/keepalive"
 	"github.com/randy-girard/flynn/pkg/random"
 	"github.com/randy-girard/flynn/pkg/shutdown"
-	"github.com/inconshreveable/log15"
-	"github.com/randy-girard/flynn-plugin-redis"
 )
 
 const (

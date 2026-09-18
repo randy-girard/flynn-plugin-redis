@@ -11,6 +11,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/inconshreveable/log15"
+	"github.com/julienschmidt/httprouter"
 	"github.com/randy-girard/flynn/controller/client"
 	ct "github.com/randy-girard/flynn/controller/types"
 	"github.com/randy-girard/flynn/discoverd/client"
@@ -18,8 +20,6 @@ import (
 	"github.com/randy-girard/flynn/pkg/random"
 	"github.com/randy-girard/flynn/pkg/resource"
 	"github.com/randy-girard/flynn/pkg/shutdown"
-	"github.com/inconshreveable/log15"
-	"github.com/julienschmidt/httprouter"
 )
 
 const (
