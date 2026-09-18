@@ -14,11 +14,12 @@ On a cluster host. A local checkout is optional: the `redis` alias pulls
 `https://github.com/randy-girard/flynn-plugin-redis` when no sibling dir exists.
 
 ```text
-flynn-host plugin install redis --ref vX
-flynn-host plugin install https://github.com/randy-girard/flynn-plugin-redis.git --ref vX
-flynn-host plugin install /path/to/flynn-plugin-redis
-flynn-host plugin uninstall redis
-flynn-host plugin uninstall redis --force
+sudo flynn-host plugin:install redis --ref vX
+sudo flynn-host plugin:install https://github.com/randy-girard/flynn-plugin-redis.git --ref vX
+sudo flynn-host plugin:install /path/to/flynn-plugin-redis
+sudo flynn-host plugin:update redis --ref vX
+sudo flynn-host plugin:uninstall redis
+sudo flynn-host plugin:uninstall redis --force
 ```
 
 `--ref` is a published GitHub Release tag from **Build and Release**. Override
@@ -34,12 +35,13 @@ the org with `--github-org`, `FLYNN_PLUGIN_GITHUB_ORG`, or `/etc/flynn/plugins.j
 }
 ```
 
-Private or draft releases need `flynn-host plugin credentials set github` (or
+Private or draft releases need `flynn-host plugin:credentials-set github` (or
 `FLYNN_PLUGIN_GITHUB_TOKEN`). The user `flynn` CLI does not install plugins.
 After install, that cluster's CLI catalog lists `redis` (`redis-cli`, `dump`,
 `restore`) from the plugin manifest. The `flynn` binary does not compile those
 commands in; it fetches usage from the cluster and runs them as jobs.
-Uninstall with `flynn-host plugin uninstall redis`. Resource-provider uninstall
+`plugin:update` deploys a new release without re-asking setup prompts.
+Uninstall with `flynn-host plugin:uninstall redis`. Resource-provider uninstall
 refuses while other apps still use provisioned resources unless `--force`.
 
 ## Usage
@@ -47,26 +49,39 @@ refuses while other apps still use provisioned resources unless `--force`.
 After the plugin is installed, provision a database for an app:
 
 ```text
-flynn resource add redis
+flynn resource:add redis
 ```
 
 That starts a Redis server as a Flynn app and configures the application to
-connect to it. The app release gets `REDIS_HOST`, `REDIS_PORT`, `REDIS_PASSWORD`,
-and `REDIS_URL` (some libraries use the URL).
+connect to it. The app release gets `FLYNN_REDIS` (the Redis app name),
+`REDIS_HOST`, `REDIS_PORT`, `REDIS_PASSWORD`, and `REDIS_URL` (some libraries
+use the URL).
 
-Open a console on the cluster (no local Redis client or firewall change):
+### Commands
+
+After install the laptop fetches these from the cluster catalog. Colon form is
+canonical; space form also works.
+
+| Command | Purpose |
+| --- | --- |
+| `flynn redis:cli` / `flynn redis redis-cli` | Open `redis-cli` on the cluster (any extra args after `--`) |
+| `flynn redis:dump [-q] [-f <file>]` | RDB dump to a file or stdout |
+| `flynn redis:restore [-q] [-f <file>]` | Restore a dump from a file or stdin |
 
 ```text
-flynn redis redis-cli
+flynn redis:cli
+flynn redis:cli -- PING
+flynn redis:dump -f db.dump
+flynn redis:restore -f db.dump
 ```
 
 The console uses `REDIS_HOST` (`leader.<redis-app>.discoverd`), the same host as
-`REDIS_URL`.
+`REDIS_URL`. No local Redis client or firewall change is required.
 
 To reach Redis from outside the cluster, add a TCP route to the leader:
 
 ```text
-flynn -a $(flynn env get FLYNN_REDIS) route add tcp --service $(flynn env get FLYNN_REDIS) --leader
+flynn -a $(flynn env:get FLYNN_REDIS) route:add tcp --service $(flynn env:get FLYNN_REDIS) --leader
 ```
 
 Firewall that port. Use it only over the local network, a VPN, or an SSH tunnel.
