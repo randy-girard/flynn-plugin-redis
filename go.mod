@@ -5,10 +5,10 @@ go 1.24.0
 toolchain go1.24.12
 
 require (
-	github.com/flynn/flynn v0.0.0-20260914140432-be1b4a311248
 	github.com/garyburd/redigo v0.0.0-20151219232044-836b6e58b335
 	github.com/inconshreveable/log15 v0.0.0-20171019012758-0decfc6c20d9
 	github.com/julienschmidt/httprouter v0.0.0-20140925104356-46807412fe50
+	github.com/randy-girard/flynn v0.0.0-20260918132949-7903267f036b
 )
 
 require (
@@ -31,5 +31,3 @@ require (
 	google.golang.org/protobuf v1.36.6 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
-
-replace github.com/flynn/flynn => github.com/randy-girard/flynn v0.0.0-20260914140432-be1b4a311248
