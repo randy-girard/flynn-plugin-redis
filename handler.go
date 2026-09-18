@@ -3,9 +3,9 @@ package redis
 import (
 	"net/http"
 
-	"github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/pkg/httphelper"
-	"github.com/flynn/flynn/pkg/status"
+	"github.com/randy-girard/flynn/discoverd/client"
+	"github.com/randy-girard/flynn/pkg/httphelper"
+	"github.com/randy-girard/flynn/pkg/status"
 	"github.com/inconshreveable/log15"
 	"github.com/julienschmidt/httprouter"
 )

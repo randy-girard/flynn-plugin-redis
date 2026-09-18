@@ -8,8 +8,8 @@ import (
 	"strings"
 	"testing"
 
-	discoverd "github.com/flynn/flynn/discoverd/client"
-	"github.com/flynn/flynn/pkg/status"
+	discoverd "github.com/randy-girard/flynn/discoverd/client"
+	"github.com/randy-girard/flynn/pkg/status"
 	"github.com/inconshreveable/log15"
 )
 

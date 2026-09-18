@@ -12,7 +12,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/flynn/flynn/discoverd/client"
+	"github.com/randy-girard/flynn/discoverd/client"
 )
 
 // Ensure the program can register with discoverd.
