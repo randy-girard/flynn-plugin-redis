@@ -116,7 +116,7 @@ Pin the Flynn OS with `-flynn-version vYYYYMMDD.N` or `build.base.version` in
 `PLUGIN_BUILD_DOCKER=0` forces native. GitHub **Build and Release** is still the
 publish path (manual, like Flynn).
 
-Pin Flynn APIs with the `replace` in `go.mod` (`github.com/randy-girard/flynn`).
+Flynn APIs come from `go.mod` (`require github.com/randy-girard/flynn`). Do not vendor Flynn.
 
 ## GitHub Actions
 
