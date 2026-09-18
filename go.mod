@@ -8,7 +8,7 @@ require (
 	github.com/garyburd/redigo v0.0.0-20151219232044-836b6e58b335
 	github.com/inconshreveable/log15 v0.0.0-20171019012758-0decfc6c20d9
 	github.com/julienschmidt/httprouter v0.0.0-20140925104356-46807412fe50
-	github.com/randy-girard/flynn v0.0.0-20260918132949-7903267f036b
+	github.com/randy-girard/flynn v0.0.0-20260918165205-684ac031d829
 )
 
 require (
