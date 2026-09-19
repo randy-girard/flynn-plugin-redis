@@ -136,8 +136,7 @@ Flynn APIs come from `go.mod` (`require github.com/randy-girard/flynn`). Do not 
 ## GitHub Actions
 
 CI runs `gofmt`, release-note checks, and `go test` on push/PR. Image builds are
-**manual**: run **Build and Release**, pass a version like `v20260914.0` (same
-scheme as Flynn). The default is a published GitHub Release (not draft, not
+**manual**: run **Build and Release**, pass a version like `v20260914.0.0` (`vYYYYMMDD.N.P`; Flynn stays `vYYYYMMDD.N`).. The default is a published GitHub Release (not draft, not
 prerelease). Notes group conventional commits the same way Flynn does, with a
 Full Changelog compare link and install commands. Turn on **draft** or
 **prerelease** only if you want those GitHub flags.
